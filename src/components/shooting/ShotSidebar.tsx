@@ -27,7 +27,7 @@ export function ShotSidebar({ layout, capturedShots, onRetake, isCapturing }: Sh
                 <img 
                   src={shot.dataUrl} 
                   alt={`Slot ${i+1}`} 
-                  className="w-full h-full object-cover scale-x-[-1]"
+                  className="w-full h-full object-cover"
                 />
               ) : (
                 <div className="absolute inset-0 flex items-center justify-center text-neutral-600 text-xs sm:text-sm font-medium">

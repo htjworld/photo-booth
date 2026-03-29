@@ -1,23 +1,26 @@
-import { cn } from '../../lib/utils';
+import { useEffect } from 'react';
 import { DetailedGridLayout } from '../../utils/gridLayouts';
 import { CountdownOverlay } from './CountdownOverlay';
 
 interface CameraViewProps {
   videoRef: React.RefObject<HTMLVideoElement | null>;
+  stream: MediaStream | null;
   layout: DetailedGridLayout;
-  glowActive: boolean;
   countdown: number | null;
   showFlash: boolean;
 }
 
-export function CameraView({ videoRef, layout, glowActive, countdown, showFlash }: CameraViewProps) {
+export function CameraView({ videoRef, stream, layout, countdown, showFlash }: CameraViewProps) {
+  useEffect(() => {
+    if (videoRef.current && stream) {
+      videoRef.current.srcObject = stream;
+    }
+  }, [stream, videoRef]);
+
   return (
     <div className="relative flex justify-center items-center w-full h-full max-h-[80vh] p-4">
-      <div 
-        className={cn(
-          "relative overflow-hidden rounded-md transition-all duration-300 ease-in-out bg-neutral-900 border border-neutral-800 shadow-2xl",
-          glowActive && "glow-active"
-        )}
+      <div
+        className="relative overflow-hidden rounded-md transition-all duration-300 ease-in-out bg-neutral-900 border border-neutral-800 shadow-2xl"
         style={{ aspectRatio: layout.cameraRatio, maxHeight: '100%', maxWidth: '100%' }}
       >
         <video

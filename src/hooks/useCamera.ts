@@ -18,9 +18,6 @@ export function useCamera() {
           audio: false
         });
         setStream(activeStream);
-        if (videoRef.current) {
-          videoRef.current.srcObject = activeStream;
-        }
       } catch (err: any) {
         setError(err.message || 'Failed to access camera');
         console.error("Camera error:", err);

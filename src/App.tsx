@@ -20,7 +20,7 @@ function App() {
   const [glowActive, setGlowActive] = useState(false);
   const [isGridModalOpen, setIsGridModalOpen] = useState(false);
   
-  const { videoRef, error: cameraError } = useCamera();
+  const { videoRef, stream, error: cameraError } = useCamera();
   const {
     capturedShots,
     isCapturing,
@@ -35,7 +35,7 @@ function App() {
   const [frameType, setFrameType] = useState<FrameType>('spectrum');
   const [frameColor, setFrameColor] = useState<string>('#eb34a8'); // default pink
   const [filter, setFilter] = useState<FilterType>('original');
-  const [mirrorAll, setMirrorAll] = useState<boolean>(true); // user wanted mirror by default
+  const [mirrorAll, setMirrorAll] = useState<boolean>(false);
   const [watermarkDate, setWatermarkDate] = useState<boolean>(false);
   const resultCanvasRef = useRef<ResultCanvasHandle>(null);
 
@@ -65,6 +65,7 @@ function App() {
   if (step === 'shooting') {
     return (
       <div className="flex flex-col h-full mx-auto max-w-[1400px] px-4 py-8">
+        {glowActive && <div className="glow-overlay" />}
         <div className="flex justify-center mb-6">
           <TimerSelector selected={timer} onChange={setTimer} disabled={isCapturing} />
         </div>
@@ -91,9 +92,9 @@ function App() {
                 <p className="text-sm opacity-70">브라우저 설정에서 권한을 허용해주세요.</p>
               </div>
             ) : (
-              <CameraView 
-                videoRef={videoRef} layout={layout} glowActive={glowActive} 
-                countdown={countdown} showFlash={showFlash} 
+              <CameraView
+                videoRef={videoRef} stream={stream} layout={layout}
+                countdown={countdown} showFlash={showFlash}
               />
             )}
             

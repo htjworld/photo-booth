@@ -64,21 +64,9 @@ export function useCanvasCompose({
           return;
         }
 
-        ctx.save();
-        
-        if (filter === 'bw') {
-          ctx.filter = 'grayscale(100%)';
-        }
-
-        ctx.beginPath();
-        ctx.rect(slot.x, slot.y, slot.w, slot.h);
-        ctx.clip();
-
         const imgRatio = img.width / img.height;
         const slotRatio = slot.w / slot.h;
-        
         let sx = 0, sy = 0, sw = img.width, sh = img.height;
-        
         if (imgRatio > slotRatio) {
           sw = img.height * slotRatio;
           sx = (img.width - sw) / 2;
@@ -87,14 +75,33 @@ export function useCanvasCompose({
           sy = (img.height - sh) / 2;
         }
 
+        // Draw to offscreen canvas first for filter/mirror
+        const offscreen = document.createElement('canvas');
+        offscreen.width = slot.w;
+        offscreen.height = slot.h;
+        const offCtx = offscreen.getContext('2d')!;
+
         if (mirrorAll) {
-          ctx.translate(slot.x + slot.w, slot.y);
-          ctx.scale(-1, 1);
-          ctx.drawImage(img, sx, sy, sw, sh, 0, 0, slot.w, slot.h);
-        } else {
-          ctx.drawImage(img, sx, sy, sw, sh, slot.x, slot.y, slot.w, slot.h);
+          offCtx.translate(slot.w, 0);
+          offCtx.scale(-1, 1);
         }
-        
+        offCtx.drawImage(img, sx, sy, sw, sh, 0, 0, slot.w, slot.h);
+
+        if (filter === 'bw') {
+          const imageData = offCtx.getImageData(0, 0, slot.w, slot.h);
+          const d = imageData.data;
+          for (let j = 0; j < d.length; j += 4) {
+            const lum = d[j] * 0.299 + d[j + 1] * 0.587 + d[j + 2] * 0.114;
+            d[j] = d[j + 1] = d[j + 2] = lum;
+          }
+          offCtx.putImageData(imageData, 0, 0);
+        }
+
+        ctx.save();
+        ctx.beginPath();
+        ctx.rect(slot.x, slot.y, slot.w, slot.h);
+        ctx.clip();
+        ctx.drawImage(offscreen, slot.x, slot.y);
         ctx.restore();
       });
 
