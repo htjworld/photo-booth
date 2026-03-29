@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Step, TimerOption, FrameType, FilterType } from './types';
-import { getDefaultLayout, DetailedGridLayout } from './utils/gridLayouts';
+import { getDefaultLayout, getDefaultLayoutForRatio, DetailedGridLayout } from './utils/gridLayouts';
 import { useCamera } from './hooks/useCamera';
 import { useCapture } from './hooks/useCapture';
 import { CameraView } from './components/shooting/CameraView';
@@ -20,9 +20,10 @@ function App() {
   const [timer, setTimer] = useState<TimerOption>(3);
   const [glowActive, setGlowActive] = useState(false);
   const [flashEnabled, setFlashEnabled] = useState(true);
+  const [webcamRatio, setWebcamRatio] = useState<number | null>(null);
   const [isGridModalOpen, setIsGridModalOpen] = useState(false);
   
-  const { videoRef, stream, error: cameraError } = useCamera();
+  const { videoRef, stream, error: cameraError, startCamera, stopCamera } = useCamera();
   const {
     capturedShots,
     isCapturing,
@@ -40,10 +41,19 @@ function App() {
   const [mirrorAll, setMirrorAll] = useState<boolean>(false);
   const [watermarkDate, setWatermarkDate] = useState<boolean>(false);
   const resultCanvasRef = useRef<ResultCanvasHandle>(null);
+  const hasAutoSelected = useRef(false);
 
   const handleShoot = () => startSequence();
   const handleRetake = (index: number) => startSequence(index);
-  
+
+  // Auto-select best layout on first webcam ratio detection
+  useEffect(() => {
+    if (webcamRatio !== null && !hasAutoSelected.current) {
+      hasAutoSelected.current = true;
+      setLayout(getDefaultLayoutForRatio(webcamRatio));
+    }
+  }, [webcamRatio]);
+
   useEffect(() => {
     resetCapture();
   }, [layout.id, resetCapture]);
@@ -52,11 +62,13 @@ function App() {
 
   const handleGoResult = () => {
     setShotOrder(capturedShots.map((_, i) => i));
+    stopCamera();
     setStep('result');
   };
 
   const handleRetakeAll = () => {
     resetCapture();
+    startCamera();
     setStep('shooting');
   };
 
@@ -99,6 +111,7 @@ function App() {
               <CameraView
                 videoRef={videoRef} stream={stream} layout={layout}
                 countdown={countdown} showFlash={showFlash}
+                onRatioDetected={setWebcamRatio}
               />
             )}
             
@@ -122,9 +135,10 @@ function App() {
           </div>
         </div>
 
-        <GridModal 
-          isOpen={isGridModalOpen} onClose={() => setIsGridModalOpen(false)} 
-          selectedLayout={layout} onSelect={setLayout} 
+        <GridModal
+          isOpen={isGridModalOpen} onClose={() => setIsGridModalOpen(false)}
+          selectedLayout={layout} onSelect={setLayout}
+          webcamRatio={webcamRatio}
         />
       </div>
     );

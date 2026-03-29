@@ -102,7 +102,68 @@ export const GRID_LAYOUTS: DetailedGridLayout[] = [
     { x: 20, y: 310, w: 360, h: 270 },
     { x: 20, y: 600, w: 360, h: 270 },
     { x: 20, y: 890, w: 360, h: 270 } // bottom 240px is blank
+  ]),
+
+  // --- 16:9 layouts (optimized for Windows / most webcams) ---
+
+  // 13: wide-1 — single 16:9 photo on landscape canvas
+  createLayout('wide-1', '사진 1장', 1, 900, 600, 16, 9, [
+    { x: 40, y: 70, w: 820, h: 461 }
+  ]),
+
+  // 14: wide-2v — 2 photos stacked, 16:9 each
+  createLayout('wide-2v', '사진 2장', 2, 600, 700, 16, 9, [
+    { x: 30, y: 30, w: 540, h: 304 },
+    { x: 30, y: 366, w: 540, h: 304 }
+  ]),
+
+  // 15: wide-3v — 3 photos stacked, 16:9 each
+  createLayout('wide-3v', '사진 3장', 3, 600, 1000, 16, 9, [
+    { x: 30, y: 22, w: 540, h: 304 },
+    { x: 30, y: 348, w: 540, h: 304 },
+    { x: 30, y: 674, w: 540, h: 304 }
+  ]),
+
+  // 16: wide-4v — 4 photos stacked, 16:9 each (Windows classic strip)
+  createLayout('wide-4v', '사진 4장', 4, 600, 1320, 16, 9, [
+    { x: 30, y: 20, w: 540, h: 304 },
+    { x: 30, y: 344, w: 540, h: 304 },
+    { x: 30, y: 668, w: 540, h: 304 },
+    { x: 30, y: 992, w: 540, h: 304 }
+  ]),
+
+  // 17: wide-4g — 2x2 grid, 16:9 each
+  createLayout('wide-4g', '사진 4장', 4, 1200, 720, 16, 9, [
+    { x: 30, y: 30, w: 560, h: 315 },
+    { x: 610, y: 30, w: 560, h: 315 },
+    { x: 30, y: 375, w: 560, h: 315 },
+    { x: 610, y: 375, w: 560, h: 315 }
   ])
 ];
 
 export const getDefaultLayout = () => GRID_LAYOUTS[5]; // strip-4v
+
+export function parseCameraRatio(ratioStr: string): number {
+  const [a, b] = ratioStr.split('/').map(s => parseFloat(s.trim()));
+  return a / b;
+}
+
+export function getBestLayoutIds(webcamRatio: number): string[] {
+  const diffs = GRID_LAYOUTS.map(layout => ({
+    id: layout.id,
+    diff: Math.abs(webcamRatio - parseCameraRatio(layout.cameraRatio))
+  }));
+  const minDiff = Math.min(...diffs.map(d => d.diff));
+  return diffs.filter(d => d.diff - minDiff < 0.001).map(d => d.id);
+}
+
+// Among best-matching layouts, pick the most photobooth-like default
+export function getDefaultLayoutForRatio(webcamRatio: number): DetailedGridLayout {
+  const bestIds = getBestLayoutIds(webcamRatio);
+  // Prefer 4-shot vertical strips as the canonical photobooth default
+  const priority = ['wide-4v', 'strip-4v'];
+  for (const id of priority) {
+    if (bestIds.includes(id)) return GRID_LAYOUTS.find(l => l.id === id)!;
+  }
+  return GRID_LAYOUTS.find(l => l.id === bestIds[0]) ?? GRID_LAYOUTS[5];
+}

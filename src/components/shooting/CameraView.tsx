@@ -8,9 +8,10 @@ interface CameraViewProps {
   layout: DetailedGridLayout;
   countdown: number | null;
   showFlash: boolean;
+  onRatioDetected?: (ratio: number) => void;
 }
 
-export function CameraView({ videoRef, stream, layout, countdown, showFlash }: CameraViewProps) {
+export function CameraView({ videoRef, stream, layout, countdown, showFlash, onRatioDetected }: CameraViewProps) {
   useEffect(() => {
     if (videoRef.current && stream) {
       videoRef.current.srcObject = stream;
@@ -29,6 +30,12 @@ export function CameraView({ videoRef, stream, layout, countdown, showFlash }: C
           autoPlay
           playsInline
           muted
+          onLoadedMetadata={(e) => {
+            const v = e.currentTarget;
+            if (v.videoWidth && v.videoHeight) {
+              onRatioDetected?.(v.videoWidth / v.videoHeight);
+            }
+          }}
         />
         <CountdownOverlay countdown={countdown} showFlash={showFlash} />
       </div>
