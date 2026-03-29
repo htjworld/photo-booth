@@ -11,25 +11,27 @@ export function useCapture(
   const [countdown, setCountdown] = useState<number | null>(null);
   const [showFlash, setShowFlash] = useState(false);
   
-  const captureFrame = useCallback(() => {
+  const captureFrame = useCallback(async () => {
     if (!videoRef.current) return null;
+
+    // Flash first, then capture
+    setShowFlash(true);
+    await new Promise(res => setTimeout(res, 80));
+
     const video = videoRef.current;
-    
     const canvas = document.createElement('canvas');
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
     const ctx = canvas.getContext('2d');
-    if (!ctx) return null;
-    
+    if (!ctx) { setShowFlash(false); return null; }
+
     ctx.translate(canvas.width, 0);
     ctx.scale(-1, 1);
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-    
+
     const dataUrl = canvas.toDataURL('image/png');
-    
-    setShowFlash(true);
-    setTimeout(() => setShowFlash(false), 150);
-    
+    setTimeout(() => setShowFlash(false), 280);
+
     return dataUrl;
   }, [videoRef]);
 
@@ -47,7 +49,7 @@ export function useCapture(
 
     if (retakeIndex !== null) {
       await runCountdown();
-      const dataUrl = captureFrame();
+      const dataUrl = await captureFrame();
       if (dataUrl) {
         setCapturedShots(prev => {
           const newShots = [...prev];
@@ -56,16 +58,14 @@ export function useCapture(
         });
       }
     } else {
-      // Clear all and start fresh sequence
       setCapturedShots([]);
       for (let i = 0; i < totalShots; i++) {
         await runCountdown();
-        const dataUrl = captureFrame();
+        const dataUrl = await captureFrame();
         if (dataUrl) {
           setCapturedShots(prev => [...prev, { id: Date.now().toString() + i, dataUrl }]);
         }
-        // Small delay between shots if needed, but the countdown provides natural delay
-        await new Promise(res => setTimeout(res, 500)); 
+        await new Promise(res => setTimeout(res, 500));
       }
     }
 

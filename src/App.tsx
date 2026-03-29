@@ -8,6 +8,7 @@ import { ShotSidebar } from './components/shooting/ShotSidebar';
 import { TimerSelector } from './components/shooting/TimerSelector';
 import { GridModal } from './components/shooting/GridModal';
 import { GlowButton } from './components/ui/GlowButton';
+import { FlashButton } from './components/ui/FlashButton';
 import { ShootButton } from './components/ui/ShootButton';
 import { LayoutGrid } from 'lucide-react';
 import { EditPanel } from './components/result/EditPanel';
@@ -18,6 +19,7 @@ function App() {
   const [layout, setLayout] = useState<DetailedGridLayout>(getDefaultLayout());
   const [timer, setTimer] = useState<TimerOption>(3);
   const [glowActive, setGlowActive] = useState(false);
+  const [flashEnabled, setFlashEnabled] = useState(true);
   const [isGridModalOpen, setIsGridModalOpen] = useState(false);
   
   const { videoRef, stream, error: cameraError } = useCamera();
@@ -66,6 +68,7 @@ function App() {
     return (
       <div className="flex flex-col h-full mx-auto max-w-[1400px] px-4 py-8">
         {glowActive && <div className="glow-overlay" />}
+        {flashEnabled && showFlash && <div className="flash-overlay" />}
         <div className="flex justify-center mb-6">
           <TimerSelector selected={timer} onChange={setTimer} disabled={isCapturing} />
         </div>
@@ -81,10 +84,11 @@ function App() {
               <LayoutGrid size={28} />
               <span className="text-xs mt-2 font-medium break-keep">그리드</span>
             </button>
+            <FlashButton active={flashEnabled} onToggle={() => setFlashEnabled(!flashEnabled)} />
             <GlowButton active={glowActive} onToggle={() => setGlowActive(!glowActive)} />
           </div>
 
-          <div className="flex-1 w-full max-w-3xl h-full order-1 sm:order-2 flex flex-col items-center justify-center">
+          <div className="relative z-[50] flex-1 w-full max-w-3xl h-full order-1 sm:order-2 flex flex-col items-center justify-center">
             {cameraError ? (
               <div className="w-full h-full flex flex-col gap-3 items-center justify-center bg-neutral-900 border border-neutral-800 rounded-md text-red-400 p-8 text-center">
                 <span className="text-3xl">📷</span>

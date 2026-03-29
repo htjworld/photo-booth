@@ -22,7 +22,7 @@ interface EditPanelProps {
 }
 
 const COLORS = [
-  '#eb4034', '#eb8c34', '#ebd334', '#71eb34', '#34ebd6', '#3471eb', '#8c34eb', '#eb34a8', '#ffffff', '#000000'
+  '#BDEFFC', '#eb4034', '#eb8c34', '#ebd334', '#71eb34', '#34ebd6', '#3471eb', '#8c34eb', '#eb34a8', '#ffffff', '#000000'
 ];
 
 export function EditPanel({
@@ -83,7 +83,7 @@ export function EditPanel({
         <div className="flex gap-2">
           <button 
             onClick={() => setFilter('original')}
-            className={`flex-1 py-3 text-sm font-bold rounded-xl border-2 transition-all ${filter === 'original' ? 'border-pink-500 bg-pink-500/10 text-pink-400' : 'border-neutral-800 bg-neutral-900 text-neutral-400 hover:bg-neutral-800 hover:border-neutral-700'}`}
+            className={`flex-1 py-3 text-sm font-bold rounded-xl border-2 transition-all ${filter === 'original' ? 'border-[#BDEFFC] bg-[#BDEFFC]/10 text-[#BDEFFC] shadow-[0_0_15px_rgba(189,239,252,0.3)]' : 'border-neutral-800 bg-neutral-900 text-neutral-400 hover:bg-neutral-800 hover:border-neutral-700'}`}
           >
             오리지널
           </button>
@@ -119,7 +119,7 @@ export function EditPanel({
       <div className="mt-auto pt-4 flex flex-col gap-3">
         <button 
           onClick={onDownload}
-          className="w-full flex items-center justify-center gap-2 py-4 rounded-xl bg-pink-500 hover:bg-pink-600 text-white font-bold text-lg transition-transform active:scale-95 shadow-lg shadow-pink-500/20"
+          className="w-full flex items-center justify-center gap-2 py-4 rounded-xl bg-[#BDEFFC] hover:bg-[#A8E5F5] text-neutral-900 font-bold text-lg transition-transform active:scale-95 shadow-[0_0_25px_rgba(189,239,252,0.5)]"
         >
           <Download size={20} className="mb-0.5" />
           다운로드 (PNG)

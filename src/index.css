@@ -3,6 +3,15 @@
 @tailwind utilities;
 
 @layer utilities {
+  .flash-overlay {
+    position: fixed;
+    inset: 0;
+    background: white;
+    pointer-events: none;
+    z-index: 40;
+    animation: flashFade 0.36s ease-out forwards;
+  }
+
   .glow-overlay {
     position: fixed;
     inset: 0;
@@ -14,6 +23,12 @@
       inset 0 0 35px 55px rgba(255, 255, 255, 0.25);
     animation: pulseGlow 2s ease-in-out infinite;
   }
+}
+
+@keyframes flashFade {
+  0%   { opacity: 1; }
+  65%  { opacity: 1; }
+  100% { opacity: 0; }
 }
 
 @keyframes pulseGlow {
