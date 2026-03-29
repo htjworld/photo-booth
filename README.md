@@ -36,6 +36,7 @@
 ## Tech Stack
 
 **Frontend**
+
 [![Skills](https://skillicons.dev/icons?i=react,vite,tailwind)](https://skillicons.dev)
 
 ## Getting Started
