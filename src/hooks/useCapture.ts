@@ -80,7 +80,6 @@ export function useCapture(
 
   return {
     capturedShots,
-    setCapturedShots,
     isCapturing,
     countdown,
     showFlash,

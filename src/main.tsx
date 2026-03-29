@@ -20,8 +20,6 @@ class ErrorBoundary extends Component<{children: ReactNode}, {hasError: boolean,
   }
 }
 
-console.log("main.tsx executing, creating root on root element", document.getElementById('root'));
-
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ErrorBoundary>
