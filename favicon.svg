@@ -1,0 +1,22 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="64" height="64" rx="12" fill="none"/>
+  
+  <rect x="12" y="8" width="40" height="48" rx="4" fill="white" stroke="#E2E8F0" stroke-width="2"/>
+  
+  <rect x="18" y="14" width="12" height="12" rx="2" fill="#F1F5F9"/>
+  <rect x="34" y="14" width="12" height="12" rx="2" fill="#F1F5F9"/>
+  <rect x="18" y="30" width="12" height="12" rx="2" fill="#F1F5F9"/>
+  <rect x="34" y="30" width="12" height="12" rx="2" fill="#F1F5F9"/>
+
+  <circle cx="32" cy="28" r="10" stroke="#1E293B" stroke-width="3"/>
+  <circle cx="29" cy="25" r="2.5" fill="#64748B"/>
+  
+  <circle cx="48" cy="12" r="4" fill="#EF4444">
+    <animate attributeName="opacity" values="1;0.5;1" dur="2s" repeatCount="indefinite" />
+  </circle>
+
+  <rect x="18" y="48" width="4" height="4" rx="1" fill="#CBD5E1"/>
+  <rect x="26" y="48" width="4" height="4" rx="1" fill="#CBD5E1"/>
+  <rect x="34" y="48" width="4" height="4" rx="1" fill="#CBD5E1"/>
+  <rect x="42" y="48" width="4" height="4" rx="1" fill="#CBD5E1"/>
+</svg>
