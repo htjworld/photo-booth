@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Step, TimerOption, FrameType, FilterType } from './types';
 import { getDefaultLayout, DetailedGridLayout } from './utils/gridLayouts';
 import { useCamera } from './hooks/useCamera';

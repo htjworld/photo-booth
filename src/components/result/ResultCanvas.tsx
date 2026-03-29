@@ -1,4 +1,4 @@
-import React, { useRef, useImperativeHandle, forwardRef } from 'react';
+import { useRef, useImperativeHandle, forwardRef } from 'react';
 import { DetailedGridLayout } from '../../utils/gridLayouts';
 import { CapturedShot, FilterType, FrameType } from '../../types';
 import { useCanvasCompose } from '../../hooks/useCanvasCompose';
