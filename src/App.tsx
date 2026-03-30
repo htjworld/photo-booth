@@ -22,6 +22,19 @@ function App() {
   const [layout, setLayout] = useState<DetailedGridLayout>(getDefaultLayout());
   const [timer, setTimer] = useState<TimerOption>(3);
   const [glowActive, setGlowActive] = useState(false);
+  const [glowVisible, setGlowVisible] = useState(false);
+  const glowTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const handleGlowToggle = () => {
+    if (!glowActive) {
+      if (glowTimer.current) clearTimeout(glowTimer.current);
+      setGlowActive(true);
+      setGlowVisible(true);
+    } else {
+      setGlowActive(false);
+      glowTimer.current = setTimeout(() => setGlowVisible(false), 800);
+    }
+  };
   const [flashEnabled, setFlashEnabled] = useState(true);
   const [webcamRatio, setWebcamRatio] = useState<number | null>(null);
   const [isGridModalOpen, setIsGridModalOpen] = useState(false);
@@ -83,7 +96,7 @@ function App() {
     return (
       <div className="flex flex-col h-full mx-auto max-w-[1400px] px-4 py-8">
         <LangToggle />
-        {glowActive && <div className="glow-overlay" />}
+        {glowVisible && <div className={glowActive ? 'glow-overlay' : 'glow-overlay-exit'} />}
         {flashEnabled && showFlash && <div className="flash-overlay" />}
         <div className="flex justify-center mb-6">
           <TimerSelector selected={timer} onChange={setTimer} disabled={isCapturing} />
@@ -101,7 +114,7 @@ function App() {
               <span className="text-xs mt-2 font-medium break-keep">{t.grid}</span>
             </button>
             <FlashButton active={flashEnabled} onToggle={() => setFlashEnabled(!flashEnabled)} />
-            <GlowButton active={glowActive} onToggle={() => setGlowActive(!glowActive)} />
+            <GlowButton active={glowActive} onToggle={handleGlowToggle} />
           </div>
 
           <div className="relative z-[50] flex-1 w-full max-w-3xl h-full order-1 sm:order-2 flex flex-col items-center justify-center">
