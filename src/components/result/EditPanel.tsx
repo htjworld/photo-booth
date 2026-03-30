@@ -47,13 +47,13 @@ export function EditPanel({
             className={`flex-1 py-2 text-sm font-semibold rounded-md transition-all ${frameType === 'spectrum' ? 'bg-neutral-700 text-white shadow-sm' : 'text-neutral-500 hover:text-white'}`}
             onClick={() => setFrameType('spectrum')}
           >
-            Spectrum
+            {t.spectrum}
           </button>
-          <button 
+          <button
             className={`flex-1 py-2 text-sm font-semibold rounded-md transition-all ${frameType === 'solid' ? 'bg-neutral-700 text-white shadow-sm' : 'text-neutral-500 hover:text-white'}`}
             onClick={() => setFrameType('solid')}
           >
-            Solid
+            {t.solid}
           </button>
         </div>
 

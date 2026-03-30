@@ -45,7 +45,7 @@ export function GridModal({ isOpen, onClose, selectedLayout, onSelect, webcamRat
         key={layout.id}
         onClick={() => { onSelect(layout); onClose(); }}
         className={`flex flex-col items-center justify-between p-3 rounded-xl border-2 transition-all h-[140px] ${
-          isSelected ? 'border-pink-500 bg-pink-50 scale-[1.02]' : 'border-neutral-200 hover:border-neutral-300 hover:bg-neutral-50 active:scale-95'
+          isSelected ? 'border-[#BDEFFC] bg-[#BDEFFC]/10 scale-[1.02]' : 'border-neutral-200 hover:border-neutral-300 hover:bg-neutral-50 active:scale-95'
         }`}
       >
         {/* Thumbnail centered in remaining space */}
@@ -71,7 +71,7 @@ export function GridModal({ isOpen, onClose, selectedLayout, onSelect, webcamRat
 
         {/* Text pinned to bottom */}
         <div className="flex flex-col items-center gap-0.5 pt-2">
-          <span className={`text-xs leading-tight text-center ${isSelected ? 'text-pink-600 font-semibold' : 'text-neutral-500'}`}>
+          <span className={`text-xs leading-tight text-center ${isSelected ? 'text-[#1a9bbf] font-semibold' : 'text-neutral-500'}`}>
             {t.layoutNames[layout.name] ?? layout.name}
           </span>
           {isBest && (

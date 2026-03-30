@@ -125,19 +125,7 @@ export function useCanvasCompose({
         const dateObj = new Date();
         const dateStr = `${dateObj.getFullYear()}.${String(dateObj.getMonth()+1).padStart(2, '0')}.${String(dateObj.getDate()).padStart(2, '0')}`;
 
-        // Vintage ink color: warm sepia on light bg, aged cream on dark bg
-        let inkColor: string;
-        if (frameType === 'solid') {
-          const hx = frameColor.toLowerCase();
-          const r = parseInt(hx.substr(1,2),16);
-          const g = parseInt(hx.substr(3,2),16);
-          const b = parseInt(hx.substr(5,2),16);
-          const lum = (r*299 + g*587 + b*114)/1000;
-          inkColor = lum < 128 ? 'rgba(210, 185, 150, 0.72)' : 'rgba(72, 42, 22, 0.52)';
-        } else {
-          // Gradient frames are always light pastels
-          inkColor = 'rgba(72, 42, 22, 0.52)';
-        }
+        const inkColor = '#D1C871';
 
         const fontSize = Math.max(16, Math.min(canvas.width, canvas.height) * 0.03);
         ctx.font = `${fontSize}px Georgia, "Times New Roman", serif`;

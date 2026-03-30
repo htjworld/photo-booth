@@ -12,7 +12,7 @@ function SortablePhotoItem({ id, shot, index }: { id: string, shot: CapturedShot
   };
   
   return (
-    <div ref={setNodeRef} style={style} {...attributes} {...listeners} className="relative w-16 h-16 rounded-md overflow-hidden bg-neutral-800 border-2 border-transparent hover:border-pink-500 cursor-grab active:cursor-grabbing shrink-0 touch-none">
+    <div ref={setNodeRef} style={style} {...attributes} {...listeners} className="relative w-16 h-16 rounded-md overflow-hidden bg-neutral-800 border-2 border-transparent hover:border-[#BDEFFC] cursor-grab active:cursor-grabbing shrink-0 touch-none">
       <img src={shot.dataUrl} className="w-full h-full object-cover pointer-events-none" />
       <div className="absolute top-1 left-1 bg-black/60 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">
         {index + 1}

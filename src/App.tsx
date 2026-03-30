@@ -52,7 +52,7 @@ function App() {
   // Result State
   const [shotOrder, setShotOrder] = useState<number[]>([]);
   const [frameType, setFrameType] = useState<FrameType>('spectrum');
-  const [frameColor, setFrameColor] = useState<string>('#eb34a8'); // default pink
+  const [frameColor, setFrameColor] = useState<string>('#BDEFFC');
   const [filter, setFilter] = useState<FilterType>('original');
   const [mirrorAll, setMirrorAll] = useState<boolean>(false);
   const [watermarkDate, setWatermarkDate] = useState<boolean>(false);
