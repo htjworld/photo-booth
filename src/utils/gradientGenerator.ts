@@ -1,4 +1,4 @@
-export function hexToHSL(hex: string): { h: number; s: number; l: number } {
+function hexToHSL(hex: string): { h: number; s: number; l: number } {
   let r = 0, g = 0, b = 0;
   if (hex.length === 4) {
     r = parseInt("0x" + hex[1] + hex[1]);

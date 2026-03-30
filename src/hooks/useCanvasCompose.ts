@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { DetailedGridLayout } from '../utils/gridLayouts';
 import { CapturedShot, FilterType, FrameType } from '../types';
 import { getSpectrumColors } from '../utils/gradientGenerator';
@@ -18,6 +18,8 @@ interface ComposeProps {
 export function useCanvasCompose({
   canvasRef, layout, shots, shotOrder, frameType, frameColor, filter, mirrorAll, watermarkDate
 }: ComposeProps) {
+  // Cache loaded images keyed by shot id — only reload when shots actually change
+  const imgCache = useRef<Map<string, HTMLImageElement>>(new Map());
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -46,12 +48,24 @@ export function useCanvasCompose({
     }
 
     const loadImages = async () => {
+      // Evict cache entries no longer in shots
+      const currentIds = new Set(shots.map(s => s.id));
+      for (const key of imgCache.current.keys()) {
+        if (!currentIds.has(key)) imgCache.current.delete(key);
+      }
+
       const imgElements = await Promise.all(shotOrder.map((originalIndex) => {
+        const shot = shots[originalIndex];
+        if (!shot) return Promise.resolve(null);
+
+        // Return cached image if available
+        if (imgCache.current.has(shot.id)) {
+          return Promise.resolve(imgCache.current.get(shot.id)!);
+        }
+
         return new Promise<HTMLImageElement | null>((resolve) => {
-          const shot = shots[originalIndex];
-          if (!shot) return resolve(null);
           const img = new Image();
-          img.onload = () => resolve(img);
+          img.onload = () => { imgCache.current.set(shot.id, img); resolve(img); };
           img.onerror = () => resolve(null);
           img.src = shot.dataUrl;
         });

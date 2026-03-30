@@ -36,7 +36,6 @@ export function PhotoReorder({ shots, shotOrder, onChangeOrder }: PhotoReorderPr
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
     if (active.id !== over?.id) {
-      // actually the items are ids
       const oldIdx = shotOrder.findIndex(idx => shots[idx].id === active.id);
       const newIdx = shotOrder.findIndex(idx => shots[idx].id === over?.id);
       onChangeOrder(arrayMove(shotOrder, oldIdx, newIdx));
