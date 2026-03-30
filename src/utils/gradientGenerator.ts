@@ -31,10 +31,11 @@ export function hexToHSL(hex: string): { h: number; s: number; l: number } {
 }
 
 export function getSpectrumColors(hexColor: string): [string, string, string] {
-  const { h } = hexToHSL(hexColor);
-  return [
-    `hsl(${(h - 40 + 360) % 360}, 65%, 88%)`,
-    `hsl(${h}, 60%, 85%)`,
-    `hsl(${(h + 40) % 360}, 70%, 86%)`
-  ];
+  const { h, s } = hexToHSL(hexColor);
+  const sat = Math.min(Math.max(s, 35), 72);
+  // Strong pastel → very airy center → strong pastel: iPhone-style diagonal gradient
+  const c1  = `hsl(${h}, ${sat}%, 82%)`;
+  const cMid = `hsl(${(h + 70) % 360}, ${Math.round(sat * 0.3)}%, 94%)`;
+  const c2  = `hsl(${(h + 140) % 360}, ${Math.round(sat * 0.9)}%, 80%)`;
+  return [c1, cMid, c2];
 }

@@ -34,12 +34,13 @@ export function useCanvasCompose({
     } else {
       const bgWidth = canvas.width;
       const bgHeight = canvas.height;
-      const grad = ctx.createLinearGradient(bgWidth, 0, 0, bgHeight);
+      // Diagonal: top-left → bottom-right for natural gradient flow
+      const grad = ctx.createLinearGradient(0, 0, bgWidth, bgHeight);
       const colors = getSpectrumColors(frameColor);
       grad.addColorStop(0, colors[0]);
       grad.addColorStop(0.5, colors[1]);
       grad.addColorStop(1, colors[2]);
-      
+
       ctx.fillStyle = grad;
       ctx.fillRect(0, 0, bgWidth, bgHeight);
     }
@@ -109,22 +110,27 @@ export function useCanvasCompose({
         ctx.save();
         const dateObj = new Date();
         const dateStr = `${dateObj.getFullYear()}.${String(dateObj.getMonth()+1).padStart(2, '0')}.${String(dateObj.getDate()).padStart(2, '0')}`;
-        
-        let lum = 255;
+
+        // Vintage ink color: warm sepia on light bg, aged cream on dark bg
+        let inkColor: string;
         if (frameType === 'solid') {
-            const h = frameColor.toLowerCase();
-            const r = parseInt(h.substr(1,2),16);
-            const g = parseInt(h.substr(3,2),16);
-            const b = parseInt(h.substr(5,2),16);
-            lum = (r*299 + g*587 + b*114)/1000;
+          const hx = frameColor.toLowerCase();
+          const r = parseInt(hx.substr(1,2),16);
+          const g = parseInt(hx.substr(3,2),16);
+          const b = parseInt(hx.substr(5,2),16);
+          const lum = (r*299 + g*587 + b*114)/1000;
+          inkColor = lum < 128 ? 'rgba(210, 185, 150, 0.72)' : 'rgba(72, 42, 22, 0.52)';
+        } else {
+          // Gradient frames are always light pastels
+          inkColor = 'rgba(72, 42, 22, 0.52)';
         }
-        ctx.fillStyle = lum < 128 ? 'rgba(255,255,255,0.8)' : 'rgba(0,0,0,0.6)';
-        
-        ctx.font = `bold ${Math.max(16, canvas.width * 0.02)}px sans-serif`;
-        ctx.textAlign = 'center';
+
+        const fontSize = Math.max(16, Math.min(canvas.width, canvas.height) * 0.03);
+        ctx.font = `${fontSize}px Georgia, "Times New Roman", serif`;
+        ctx.fillStyle = inkColor;
+        ctx.textAlign = 'right';
         ctx.textBaseline = 'bottom';
-        // Date located at the bottom center with padding
-        ctx.fillText(dateStr, canvas.width / 2, canvas.height - (canvas.height * 0.015));
+        ctx.fillText(dateStr, canvas.width - canvas.width * 0.045, canvas.height - canvas.height * 0.025);
         ctx.restore();
       }
     };

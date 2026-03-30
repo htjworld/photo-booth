@@ -29,42 +29,57 @@ export function GridModal({ isOpen, onClose, selectedLayout, onSelect, webcamRat
   const optimalLayouts = sorted.filter(l => bestIds.includes(l.id));
   const otherLayouts = sorted.filter(l => !bestIds.includes(l.id));
 
+  const THUMB_MAX_W = 54;
+  const THUMB_MAX_H = 86;
+
   const renderGrid = (layouts: typeof GRID_LAYOUTS) => layouts.map((layout) => {
     const isSelected = selectedLayout.id === layout.id;
     const isBest = bestIds.includes(layout.id);
+
+    const ratio = layout.width / layout.height;
+    const thumbW = Math.min(THUMB_MAX_W, THUMB_MAX_H * ratio);
+    const thumbH = Math.min(THUMB_MAX_H, THUMB_MAX_W / ratio);
+
     return (
       <button
         key={layout.id}
         onClick={() => { onSelect(layout); onClose(); }}
-        className={`flex flex-col items-center p-3 rounded-xl border-2 transition-all ${
+        className={`flex flex-col items-center justify-between p-3 rounded-xl border-2 transition-all h-[140px] ${
           isSelected ? 'border-pink-500 bg-pink-50 scale-[1.02]' : 'border-neutral-200 hover:border-neutral-300 hover:bg-neutral-50 active:scale-95'
         }`}
       >
-        <div
-          className="flex items-center justify-center rounded-sm mb-3 shadow-[0_0_0_1px_rgba(0,0,0,0.1)] relative"
-          style={{ width: '40px', aspectRatio: layout.aspectRatio }}
-        >
-          {layout.slots.map((slot, i) => (
-            <div
-              key={i}
-              className="absolute bg-neutral-400"
-              style={{
-                left: `${(slot.x / layout.width) * 100}%`,
-                top: `${(slot.y / layout.height) * 100}%`,
-                width: `${(slot.w / layout.width) * 100}%`,
-                height: `${(slot.h / layout.height) * 100}%`
-              }}
-            />
-          ))}
+        {/* Thumbnail centered in remaining space */}
+        <div className="flex-1 flex items-center justify-center w-full">
+          <div
+            className="relative rounded-sm bg-neutral-100 shadow-[0_0_0_1px_rgba(0,0,0,0.1)]"
+            style={{ width: `${thumbW}px`, height: `${thumbH}px` }}
+          >
+            {layout.slots.map((slot, i) => (
+              <div
+                key={i}
+                className="absolute bg-neutral-400"
+                style={{
+                  left: `${(slot.x / layout.width) * 100}%`,
+                  top: `${(slot.y / layout.height) * 100}%`,
+                  width: `${(slot.w / layout.width) * 100}%`,
+                  height: `${(slot.h / layout.height) * 100}%`,
+                }}
+              />
+            ))}
+          </div>
         </div>
-        <span className={`text-xs ${isSelected ? 'text-pink-600 font-semibold' : 'text-neutral-500'}`}>
-          {t.layoutNames[layout.name] ?? layout.name}
-        </span>
-        {isBest && (
-          <span className="mt-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-teal-100 text-teal-700">
-            {t.optimal}
+
+        {/* Text pinned to bottom */}
+        <div className="flex flex-col items-center gap-0.5 pt-2">
+          <span className={`text-xs leading-tight text-center ${isSelected ? 'text-pink-600 font-semibold' : 'text-neutral-500'}`}>
+            {t.layoutNames[layout.name] ?? layout.name}
           </span>
-        )}
+          {isBest && (
+            <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-teal-100 text-teal-700">
+              {t.optimal}
+            </span>
+          )}
+        </div>
       </button>
     );
   });

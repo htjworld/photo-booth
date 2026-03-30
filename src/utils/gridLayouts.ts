@@ -34,20 +34,20 @@ export const GRID_LAYOUTS: DetailedGridLayout[] = [
   ]),
   // 3: strip-2v
   createLayout('strip-2v', '2 Photos', 2, 600, 1200, 4, 3, [
-    { x: 50, y: 50, w: 500, h: 375 },
-    { x: 50, y: 475, w: 500, h: 375 }
+    { x: 50, y: 200, w: 500, h: 375 },
+    { x: 50, y: 625, w: 500, h: 375 }
   ]),
   // 4: strip-3v
   createLayout('strip-3v', '3 Photos', 3, 400, 1200, 4, 3, [
-    { x: 30, y: 30, w: 340, h: 255 },
-    { x: 30, y: 315, w: 340, h: 255 },
-    { x: 30, y: 600, w: 340, h: 255 }
+    { x: 30, y: 187, w: 340, h: 255 },
+    { x: 30, y: 472, w: 340, h: 255 },
+    { x: 30, y: 757, w: 340, h: 255 }
   ]),
   // 5: wide-3h
   createLayout('wide-3h', '3 Photos', 3, 1200, 600, 3, 4, [
-    { x: 40, y: 40, w: 346, h: 462 },
-    { x: 426, y: 40, w: 346, h: 462 },
-    { x: 812, y: 40, w: 346, h: 462 }
+    { x: 40, y: 69, w: 346, h: 462 },
+    { x: 426, y: 69, w: 346, h: 462 },
+    { x: 812, y: 69, w: 346, h: 462 }
   ]),
   // 6: strip-4v
   // Classic vertical photobooth
@@ -60,25 +60,25 @@ export const GRID_LAYOUTS: DetailedGridLayout[] = [
   // 7: grid-4
   // 2x2 square (window frame)
   createLayout('grid-4', '4 Photos', 4, 800, 800, 4, 3, [
-    { x: 30, y: 30, w: 355, h: 266 },
-    { x: 415, y: 30, w: 355, h: 266 },
-    { x: 30, y: 326, w: 355, h: 266 },
-    { x: 415, y: 326, w: 355, h: 266 } // Centered tightly in the square
+    { x: 30, y: 119, w: 355, h: 266 },
+    { x: 415, y: 119, w: 355, h: 266 },
+    { x: 30, y: 415, w: 355, h: 266 },
+    { x: 415, y: 415, w: 355, h: 266 }
   ]),
   // 8: left-4
   // Strip aligned left, empty space on right
   createLayout('left-4', '4 Photos', 4, 800, 1200, 4, 3, [
-    { x: 40, y: 40, w: 340, h: 255 },
-    { x: 40, y: 335, w: 340, h: 255 },
-    { x: 40, y: 630, w: 340, h: 255 },
-    { x: 40, y: 925, w: 340, h: 255 }
+    { x: 40, y: 30, w: 340, h: 255 },
+    { x: 40, y: 325, w: 340, h: 255 },
+    { x: 40, y: 620, w: 340, h: 255 },
+    { x: 40, y: 915, w: 340, h: 255 }
   ]),
   // 9: right-4
   createLayout('right-4', '4 Photos', 4, 800, 1200, 4, 3, [
-    { x: 420, y: 40, w: 340, h: 255 },
-    { x: 420, y: 335, w: 340, h: 255 },
-    { x: 420, y: 630, w: 340, h: 255 },
-    { x: 420, y: 925, w: 340, h: 255 }
+    { x: 420, y: 30, w: 340, h: 255 },
+    { x: 420, y: 325, w: 340, h: 255 },
+    { x: 420, y: 620, w: 340, h: 255 },
+    { x: 420, y: 915, w: 340, h: 255 }
   ]),
   // 10: wide-4h
   createLayout('wide-4h', '4 Photos', 4, 1600, 600, 3, 4, [
@@ -90,18 +90,17 @@ export const GRID_LAYOUTS: DetailedGridLayout[] = [
   // 11: tall-4
   // 2 col, 2 row, portrait result
   createLayout('tall-4', '4 Photos', 4, 800, 1200, 4, 5, [
-    { x: 40, y: 40, w: 340, h: 425 },
-    { x: 420, y: 40, w: 340, h: 425 },
-    { x: 40, y: 505, w: 340, h: 425 },
-    { x: 420, y: 505, w: 340, h: 425 }
+    { x: 40, y: 155, w: 340, h: 425 },
+    { x: 420, y: 155, w: 340, h: 425 },
+    { x: 40, y: 620, w: 340, h: 425 },
+    { x: 420, y: 620, w: 340, h: 425 }
   ]),
   // 12: strip-4b
-  // Big gap at bottom for date/text
   createLayout('strip-4b', '4 Photos', 4, 400, 1400, 4, 3, [
-    { x: 20, y: 20, w: 360, h: 270 },
-    { x: 20, y: 310, w: 360, h: 270 },
-    { x: 20, y: 600, w: 360, h: 270 },
-    { x: 20, y: 890, w: 360, h: 270 } // bottom 240px is blank
+    { x: 20, y: 130, w: 360, h: 270 },
+    { x: 20, y: 420, w: 360, h: 270 },
+    { x: 20, y: 710, w: 360, h: 270 },
+    { x: 20, y: 1000, w: 360, h: 270 }
   ]),
 
   // --- 16:9 layouts (optimized for Windows / most webcams) ---
