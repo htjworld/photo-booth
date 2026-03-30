@@ -2,6 +2,7 @@ import { FrameType, FilterType, CapturedShot } from '../../types';
 import { PhotoReorder } from './PhotoReorder';
 import { FlipHorizontal, Download, Calendar } from 'lucide-react';
 import { getSpectrumColors } from '../../utils/gradientGenerator';
+import { useLang } from '../../LangContext';
 
 interface EditPanelProps {
   shots: CapturedShot[];
@@ -30,16 +31,17 @@ export function EditPanel({
   frameColor, setFrameColor, filter, setFilter,
   mirrorAll, setMirrorAll, watermarkDate, setWatermarkDate, onDownload, onRetake
 }: EditPanelProps) {
+  const { t } = useLang();
   return (
     <div className="flex flex-col gap-6 w-full max-w-xs shrink-0 bg-neutral-950 p-6 rounded-3xl border border-neutral-800/80 shadow-2xl h-full overflow-y-auto">
       
       <div>
-        <h3 className="text-sm font-semibold text-neutral-400 mb-3 px-1">사진 순서 <span className="text-xs font-normal ml-1 opacity-70">(드래그)</span></h3>
+        <h3 className="text-sm font-semibold text-neutral-400 mb-3 px-1">{t.photoOrder} <span className="text-xs font-normal ml-1 opacity-70">({t.dragHint})</span></h3>
         <PhotoReorder shots={shots} shotOrder={shotOrder} onChangeOrder={setShotOrder} />
       </div>
 
       <div className="flex flex-col gap-3">
-        <h3 className="text-sm font-semibold text-neutral-400 px-1">프레임 설정</h3>
+        <h3 className="text-sm font-semibold text-neutral-400 px-1">{t.frameSettings}</h3>
         <div className="flex gap-2 p-1 bg-neutral-900 rounded-lg">
           <button 
             className={`flex-1 py-2 text-sm font-semibold rounded-md transition-all ${frameType === 'spectrum' ? 'bg-neutral-700 text-white shadow-sm' : 'text-neutral-500 hover:text-white'}`}
@@ -79,39 +81,39 @@ export function EditPanel({
       </div>
 
       <div>
-        <h3 className="text-sm font-semibold text-neutral-400 mb-3 px-1">필터 선택</h3>
+        <h3 className="text-sm font-semibold text-neutral-400 mb-3 px-1">{t.filterLabel}</h3>
         <div className="flex gap-2">
           <button 
             onClick={() => setFilter('original')}
             className={`flex-1 py-3 text-sm font-bold rounded-xl border-2 transition-all ${filter === 'original' ? 'border-[#BDEFFC] bg-[#BDEFFC]/10 text-[#BDEFFC] shadow-[0_0_15px_rgba(189,239,252,0.3)]' : 'border-neutral-800 bg-neutral-900 text-neutral-400 hover:bg-neutral-800 hover:border-neutral-700'}`}
           >
-            오리지널
+            {t.original}
           </button>
           <button 
             onClick={() => setFilter('bw')}
             className={`flex-1 py-3 text-sm font-bold rounded-xl border-2 transition-all ${filter === 'bw' ? 'border-neutral-300 bg-neutral-200 text-neutral-900 shadow-sm' : 'border-neutral-800 bg-neutral-900 text-neutral-400 hover:bg-neutral-800 hover:border-neutral-700'}`}
           >
-            흑백 (B&W)
+            {t.bw}
           </button>
         </div>
       </div>
 
       <div className="flex flex-col gap-3">
-        <h3 className="text-sm font-semibold text-neutral-400 px-1">옵션</h3>
+        <h3 className="text-sm font-semibold text-neutral-400 px-1">{t.options}</h3>
         <div className="grid grid-cols-2 gap-2">
           <button
             onClick={() => setMirrorAll(!mirrorAll)}
             className={`flex flex-col items-center justify-center gap-1.5 p-3 rounded-xl border transition-colors ${mirrorAll ? 'bg-neutral-800 border-neutral-600 text-white' : 'bg-neutral-900 border-neutral-800 text-neutral-400 hover:bg-neutral-800'}`}
           >
             <FlipHorizontal size={20} />
-            <span className="text-[11px] font-bold">전체 거울모드</span>
+            <span className="text-[11px] font-bold">{t.mirrorMode}</span>
           </button>
           <button
             onClick={() => setWatermarkDate(!watermarkDate)}
             className={`flex flex-col items-center justify-center gap-1.5 p-3 rounded-xl border transition-colors ${watermarkDate ? 'bg-neutral-800 border-neutral-600 text-white' : 'bg-neutral-900 border-neutral-800 text-neutral-400 hover:bg-neutral-800'}`}
           >
             <Calendar size={20} />
-            <span className="text-[11px] font-bold">날짜 워터마크</span>
+            <span className="text-[11px] font-bold">{t.dateWatermark}</span>
           </button>
         </div>
       </div>
@@ -122,13 +124,13 @@ export function EditPanel({
           className="w-full flex items-center justify-center gap-2 py-4 rounded-xl bg-[#BDEFFC] hover:bg-[#A8E5F5] text-neutral-900 font-bold text-lg transition-transform active:scale-95 shadow-[0_0_25px_rgba(189,239,252,0.5)]"
         >
           <Download size={20} className="mb-0.5" />
-          다운로드 (PNG)
+          {t.download}
         </button>
         <button 
           onClick={onRetake}
           className="w-full py-3 rounded-xl bg-transparent border border-neutral-700 hover:bg-neutral-800 text-neutral-300 font-medium text-sm transition-colors"
         >
-          처음부터 다시 찍기
+          {t.retake}
         </button>
       </div>
 

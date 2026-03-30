@@ -2,6 +2,7 @@ import { StrictMode, Component, ReactNode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
+import { LangProvider } from './LangContext.tsx'
 
 class ErrorBoundary extends Component<{children: ReactNode}, {hasError: boolean, error: any}> {
   constructor(props: any) { super(props); this.state = { hasError: false, error: null }; }
@@ -23,7 +24,9 @@ class ErrorBoundary extends Component<{children: ReactNode}, {hasError: boolean,
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ErrorBoundary>
-      <App />
+      <LangProvider>
+        <App />
+      </LangProvider>
     </ErrorBoundary>
   </StrictMode>,
 )

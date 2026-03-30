@@ -1,5 +1,6 @@
 import { DetailedGridLayout, GRID_LAYOUTS, getBestLayoutIds, parseCameraRatio } from '../../utils/gridLayouts';
 import { X } from 'lucide-react';
+import { useLang } from '../../LangContext';
 
 interface GridModalProps {
   isOpen: boolean;
@@ -10,6 +11,7 @@ interface GridModalProps {
 }
 
 export function GridModal({ isOpen, onClose, selectedLayout, onSelect, webcamRatio }: GridModalProps) {
+  const { t } = useLang();
   if (!isOpen) return null;
 
   const bestIds = webcamRatio !== null ? getBestLayoutIds(webcamRatio) : [];
@@ -56,11 +58,11 @@ export function GridModal({ isOpen, onClose, selectedLayout, onSelect, webcamRat
           ))}
         </div>
         <span className={`text-xs ${isSelected ? 'text-pink-600 font-semibold' : 'text-neutral-500'}`}>
-          {layout.name}
+          {t.layoutNames[layout.name] ?? layout.name}
         </span>
         {isBest && (
           <span className="mt-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-teal-100 text-teal-700">
-            최적
+            {t.optimal}
           </span>
         )}
       </button>
@@ -68,12 +70,13 @@ export function GridModal({ isOpen, onClose, selectedLayout, onSelect, webcamRat
   });
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 transition-opacity">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 transition-opacity" onClick={onClose}>
       <div
         className="bg-white text-black p-6 rounded-2xl w-full max-w-xl max-h-[85vh] overflow-y-auto animate-in fade-in zoom-in-95 duration-200"
+        onClick={e => e.stopPropagation()}
       >
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-bold">그리드</h2>
+          <h2 className="text-xl font-bold">{t.gridTitle}</h2>
           <button onClick={onClose} className="p-2 hover:bg-neutral-100 rounded-full transition-colors">
             <X size={20} />
           </button>
@@ -83,7 +86,7 @@ export function GridModal({ isOpen, onClose, selectedLayout, onSelect, webcamRat
           <>
             <div className="flex items-center gap-3 mb-4">
               <div className="flex-1 h-px bg-neutral-200" />
-              <span className="text-xs font-semibold text-teal-600 shrink-0">내 웹캠에 최적</span>
+              <span className="text-xs font-semibold text-teal-600 shrink-0">{t.bestForWebcam}</span>
               <div className="flex-1 h-px bg-neutral-200" />
             </div>
             <div className="grid grid-cols-3 sm:grid-cols-4 gap-4">
@@ -94,7 +97,7 @@ export function GridModal({ isOpen, onClose, selectedLayout, onSelect, webcamRat
               <>
                 <div className="flex items-center gap-3 my-5">
                   <div className="flex-1 h-px bg-neutral-200" />
-                  <span className="text-xs font-semibold text-neutral-400 shrink-0">기타</span>
+                  <span className="text-xs font-semibold text-neutral-400 shrink-0">{t.other}</span>
                   <div className="flex-1 h-px bg-neutral-200" />
                 </div>
                 <div className="grid grid-cols-3 sm:grid-cols-4 gap-4">

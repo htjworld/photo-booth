@@ -1,5 +1,6 @@
 import { CapturedShot } from '../../types';
 import { DetailedGridLayout } from '../../utils/gridLayouts';
+import { useLang } from '../../LangContext';
 
 interface ShotSidebarProps {
   layout: DetailedGridLayout;
@@ -9,6 +10,7 @@ interface ShotSidebarProps {
 }
 
 export function ShotSidebar({ layout, capturedShots, onRetake, isCapturing }: ShotSidebarProps) {
+  const { t } = useLang();
   const slots = Array.from({ length: layout.shots });
 
   return (
@@ -38,7 +40,7 @@ export function ShotSidebar({ layout, capturedShots, onRetake, isCapturing }: Sh
             
             {shot && !isCapturing && (
               <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-pink-500 text-white text-[11px] font-medium px-3 py-1.5 rounded-full whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-lg z-10 w-fit">
-                클릭하여 다시 촬영
+                {t.clickToRetake}
                 <div className="absolute top-full left-1/2 -translate-x-1/2 border-[5px] border-transparent border-t-pink-500" />
               </div>
             )}

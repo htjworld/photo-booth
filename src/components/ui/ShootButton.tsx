@@ -1,12 +1,14 @@
 import { Camera } from 'lucide-react';
+import { useLang } from '../../LangContext';
 
 interface ShootButtonProps {
   onClick: () => void;
   disabled: boolean;
-  label?: string;
 }
 
-export function ShootButton({ onClick, disabled, label = "촬영 시작" }: ShootButtonProps) {
+export function ShootButton({ onClick, disabled }: ShootButtonProps) {
+  const { t } = useLang();
+  const label = t.shoot;
   return (
     <button
       onClick={onClick}

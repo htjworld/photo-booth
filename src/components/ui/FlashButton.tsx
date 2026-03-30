@@ -1,4 +1,5 @@
 import { Zap, ZapOff } from 'lucide-react';
+import { useLang } from '../../LangContext';
 
 interface FlashButtonProps {
   active: boolean;
@@ -6,6 +7,7 @@ interface FlashButtonProps {
 }
 
 export function FlashButton({ active, onToggle }: FlashButtonProps) {
+  const { t } = useLang();
   return (
     <button
       onClick={onToggle}
@@ -16,7 +18,7 @@ export function FlashButton({ active, onToggle }: FlashButtonProps) {
       }`}
     >
       {active ? <Zap size={28} /> : <ZapOff size={28} />}
-      <span className="text-xs mt-2 font-medium">플래시 {active ? 'ON' : 'OFF'}</span>
+      <span className="text-xs mt-2 font-medium">{t.flash} {active ? 'ON' : 'OFF'}</span>
     </button>
   );
 }

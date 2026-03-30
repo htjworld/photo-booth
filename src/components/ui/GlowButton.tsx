@@ -1,4 +1,5 @@
 import { Lightbulb, LightbulbOff } from 'lucide-react';
+import { useLang } from '../../LangContext';
 
 interface GlowButtonProps {
   active: boolean;
@@ -6,6 +7,7 @@ interface GlowButtonProps {
 }
 
 export function GlowButton({ active, onToggle }: GlowButtonProps) {
+  const { t } = useLang();
   return (
     <button
       onClick={onToggle}
@@ -16,7 +18,7 @@ export function GlowButton({ active, onToggle }: GlowButtonProps) {
       }`}
     >
       {active ? <Lightbulb size={28} /> : <LightbulbOff size={28} />}
-      <span className="text-xs mt-2 font-medium">글로우 {active ? 'ON' : 'OFF'}</span>
+      <span className="text-xs mt-2 font-medium">{t.glow} {active ? 'ON' : 'OFF'}</span>
     </button>
   );
 }
