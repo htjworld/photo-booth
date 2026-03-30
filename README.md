@@ -9,11 +9,9 @@
 
 ## Background
 
-기존 포토부스 웹앱은 기능이 너무 많고 UI가 복잡해서, 실제로 쓰고 싶은 기능만 골라 쓰기가 번거롭습니다.
-친구들과 함께 쓸 수 있는, 필요한 기능만 담은 깔끔한 포토부스 앱이 필요했습니다.
-
-별도 설치나 회원가입 없이 브라우저에서 바로 사용할 수 있으며, 촬영한 사진은 서버에 저장되지 않습니다.
-기기에 다운로드할 때만 로컬로 저장되므로 편하게 사용할 수 있습니다.
+기존 포토부스 웹앱은 기능이 과하고 UI가 복잡해, 필요한 기능만 골라 쓰기가 번거롭습니다.
+설치나 회원가입 없이 브라우저에서 바로 사용할 수 있는, 필요한 것만 담은 포토부스 앱을 만들고 싶었습니다.
+서버리스로 동작하기 때문에 촬영한 사진은 서버에 저장되지 않으며, 기기에 다운로드할 때만 로컬로 저장됩니다.
 
 ## Features
 
@@ -44,15 +42,7 @@
 **Requirements**
 - Node.js 20+
 
-**macOS / Linux**
-```bash
-git clone https://github.com/htjworld/photo-booth.git
-cd photo-booth
-npm install
-npm run dev
-```
-
-**Windows**
+**macOS / Linux / Windows**
 ```bash
 git clone https://github.com/htjworld/photo-booth.git
 cd photo-booth
