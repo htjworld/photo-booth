@@ -88,63 +88,61 @@ function App() {
 
   // ── Shooting step ──────────────────────────────────────────────
   return (
-    <div
-      className="relative flex flex-col h-full overflow-hidden bg-black"
-    >
-      <LangToggle />
-
+    <div className="relative h-full overflow-hidden bg-black">
       {/* Glow overlay */}
       {glowVisible && <div className={glowActive ? 'glow-overlay' : 'glow-overlay-exit'} />}
 
       {/* Flash overlay */}
       {showFlash && <div className="flash-overlay" />}
 
+      {/* Full-screen camera */}
+      {cameraError ? (
+        <div className="absolute inset-0 flex flex-col gap-3 items-center justify-center bg-neutral-900 text-red-400 p-8 text-center">
+          <span className="text-3xl">📷</span>
+          <p>{t.cameraError}</p>
+          <p className="text-sm opacity-70">{t.cameraErrorHint}</p>
+        </div>
+      ) : (
+        <div className="absolute inset-0">
+          <CameraView
+            videoRef={videoRef}
+            stream={stream}
+            countdown={countdown}
+            showFlash={showFlash}
+            onRatioDetected={setWebcamRatio}
+          />
+        </div>
+      )}
+
+      {/* LangToggle */}
+      <LangToggle />
+
       {/* Glow button — fixed bottom-left */}
       <div className="fixed bottom-6 left-4 z-50">
         <GlowButton active={glowActive} onToggle={handleGlowToggle} />
       </div>
 
-      {/* Timer — top center */}
-      <div className="flex justify-center pt-4 pb-2 shrink-0">
-        <TimerSelector selected={timer} onChange={setTimer} disabled={isCapturing} />
+      {/* Top center: timer */}
+      <div className="absolute top-0 left-0 right-0 flex justify-center pt-3 z-20 pointer-events-none">
+        <div className="pointer-events-auto">
+          <TimerSelector selected={timer} onChange={setTimer} disabled={isCapturing} />
+        </div>
       </div>
 
-      {/* Main area: camera + sidebar */}
-      <div className="flex flex-1 min-h-0 gap-3 px-3 pb-2">
-        {/* Camera — fills all available space */}
-        <div className="flex-1 min-w-0 flex items-center justify-center">
-          {cameraError ? (
-            <div className="w-full h-full flex flex-col gap-3 items-center justify-center bg-neutral-900 border border-neutral-800 rounded-md text-red-400 p-8 text-center">
-              <span className="text-3xl">📷</span>
-              <p>{t.cameraError}</p>
-              <p className="text-sm opacity-70">{t.cameraErrorHint}</p>
-            </div>
-          ) : (
-            <CameraView
-              videoRef={videoRef}
-              stream={stream}
-              countdown={countdown}
-              showFlash={showFlash}
-              onRatioDetected={setWebcamRatio}
-            />
-          )}
-        </div>
-
-        {/* Sidebar: shot count + slots */}
-        <div className="flex items-center py-2">
-          <ShotSidebar
-            shotCount={shotCount}
-            onShotCountChange={setShotCount}
-            capturedShots={capturedShots}
-            onRetake={i => startSequence(i)}
-            isCapturing={isCapturing}
-            webcamRatio={webcamRatio}
-          />
-        </div>
+      {/* Right side: sidebar */}
+      <div className="absolute right-3 top-1/2 -translate-y-1/2 z-20">
+        <ShotSidebar
+          shotCount={shotCount}
+          onShotCountChange={setShotCount}
+          capturedShots={capturedShots}
+          onRetake={i => startSequence(i)}
+          isCapturing={isCapturing}
+          webcamRatio={webcamRatio}
+        />
       </div>
 
       {/* Bottom: Shoot / Done */}
-      <div className="flex justify-center items-center gap-4 py-4 shrink-0">
+      <div className="absolute bottom-4 left-0 right-0 flex justify-center items-center gap-4 z-20">
         {(!isComplete || isCapturing) && (
           <ShootButton onClick={() => startSequence()} disabled={isCapturing || !!cameraError} />
         )}

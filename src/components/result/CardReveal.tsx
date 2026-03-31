@@ -63,9 +63,7 @@ export function CardReveal({ letter, shots, webcamRatio, onRetake }: CardRevealP
   const { t } = useLang();
   const totalShots = shots.length;
 
-  // Frame count = how many photos to include in the strip
   const [frameCount, setFrameCount] = useState(totalShots);
-  // Photo order (indices into shots[])
   const [order, setOrder] = useState<number[]>(() => shots.map((_, i) => i));
   const [filter, setFilter] = useState<FilterType>('original');
   const [zoom, setZoom] = useState<ZoomState>('none');
@@ -77,7 +75,6 @@ export function CardReveal({ letter, shots, webcamRatio, onRetake }: CardRevealP
 
   const photoAspect = webcamRatio ? `${webcamRatio}` : '1.33';
 
-  // Drag-to-reorder inside strip
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
@@ -88,28 +85,60 @@ export function CardReveal({ letter, shots, webcamRatio, onRetake }: CardRevealP
     }
   };
 
-  // Shots shown in strip = first `frameCount` of current order
   const visibleOrder = order.slice(0, frameCount);
   const hiddenOrder = order.slice(frameCount);
 
   // Save
   const handleSave = useCallback(async () => {
-    const target =
-      zoom === 'letter' ? letterCardRef.current :
-      zoom === 'photo'  ? photoStripRef.current :
-      fullViewRef.current;
-    if (!target || isSaving) return;
+    if (isSaving) return;
     setIsSaving(true);
     try {
-      const canvas = await html2canvas(target, {
-        scale: 2,
-        useCORS: true,
-        backgroundColor: '#FAF5E4',
-      });
+      let canvas: HTMLCanvasElement;
+
+      if (zoom === 'letter' && letterCardRef.current) {
+        // Save letter card — capture without rotation for clean output
+        canvas = await html2canvas(letterCardRef.current, {
+          scale: 2,
+          useCORS: true,
+          allowTaint: true,
+          imageTimeout: 10000,
+          backgroundColor: null,
+          onclone: (_, el) => {
+            el.style.transform = 'none';
+            el.style.position = 'static';
+            el.style.boxShadow = 'none';
+          },
+        });
+      } else if (zoom === 'photo' && photoStripRef.current) {
+        // Save photo strip — capture without rotation
+        canvas = await html2canvas(photoStripRef.current, {
+          scale: 2,
+          useCORS: true,
+          allowTaint: true,
+          imageTimeout: 10000,
+          backgroundColor: null,
+          onclone: (_, el) => {
+            el.style.transform = 'none';
+            el.style.position = 'static';
+            el.style.boxShadow = 'none';
+          },
+        });
+      } else {
+        // Save combined — capture full view with both cards
+        if (!fullViewRef.current) return;
+        canvas = await html2canvas(fullViewRef.current, {
+          scale: 2,
+          useCORS: true,
+          allowTaint: true,
+          imageTimeout: 10000,
+          backgroundColor: '#FAF5E4',
+        });
+      }
+
       const a = document.createElement('a');
       a.href = canvas.toDataURL('image/png');
       const d = new Date();
-      a.download = `photocard_${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}.png`;
+      a.download = `photocard_${d.getFullYear()}${String(d.getMonth() + 1).padStart(2, '0')}${String(d.getDate()).padStart(2, '0')}.png`;
       a.click();
     } finally {
       setIsSaving(false);
@@ -121,7 +150,6 @@ export function CardReveal({ letter, shots, webcamRatio, onRetake }: CardRevealP
     zoom === 'photo'  ? t.savePhoto  :
     t.saveAll;
 
-  // Card click handlers
   const handleLetterClick = () => setZoom(z => z === 'letter' ? 'none' : 'letter');
   const handlePhotoClick  = () => setZoom(z => z === 'photo'  ? 'none' : 'photo');
 
@@ -137,15 +165,23 @@ export function CardReveal({ letter, shots, webcamRatio, onRetake }: CardRevealP
       <div className="absolute inset-0 bg-[#FAF5E4]/60 pointer-events-none" />
 
       {/* ── Cards area ── */}
-      <div
-        className="relative z-10"
-        style={{ width: 360, height: 480 }}
-      >
-        {/* Full-view capture wrapper (padded so rotated cards aren't clipped) */}
+      {/* Outer visible container: 480×620 */}
+      <div className="relative z-10" style={{ width: 480, height: 620 }}>
+        {/*
+          fullViewRef: same size with padding so rotated cards aren't clipped.
+          padding: 70px all sides; margin: -70px; content-box → captured size: 620×760
+        */}
         <div
           ref={fullViewRef}
           className="relative"
-          style={{ width: 360, height: 480, padding: '60px 70px', margin: '-60px -70px', boxSizing: 'content-box', background: 'transparent' }}
+          style={{
+            width: 480,
+            height: 620,
+            padding: 70,
+            margin: -70,
+            boxSizing: 'content-box',
+            background: 'transparent',
+          }}
         >
           {/* ── Letter card ── */}
           <div
@@ -153,19 +189,15 @@ export function CardReveal({ letter, shots, webcamRatio, onRetake }: CardRevealP
             onClick={handleLetterClick}
             className="absolute rounded-2xl shadow-xl overflow-hidden select-none"
             style={{
-              width: 300,
-              top: 20,
-              left: 5,
-              backgroundImage: "url('/paper-card.jpg')",
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-              padding: '20px 22px 24px',
+              width: 280,
+              top: 30,
+              left: 20,
               transform: zoom === 'letter'
-                ? 'rotate(0deg) scale(1.12) translateY(-20px)'
+                ? 'rotate(0deg) scale(1.1) translate(50px, 40px)'
                 : zoom === 'photo'
-                ? 'rotate(-12deg) scale(0.88) translateX(-15px)'
+                ? 'rotate(-14deg) scale(0.88) translateX(-10px)'
                 : 'rotate(-10deg)',
-              transition: 'transform 0.4s cubic-bezier(0.34,1.4,0.64,1), box-shadow 0.4s ease, z-index 0s',
+              transition: 'transform 0.4s cubic-bezier(0.34,1.4,0.64,1), box-shadow 0.4s ease',
               zIndex: zoom === 'letter' ? 10 : zoom === 'photo' ? 1 : 3,
               boxShadow: zoom === 'letter'
                 ? '0 16px 40px rgba(0,0,0,0.25)'
@@ -173,24 +205,34 @@ export function CardReveal({ letter, shots, webcamRatio, onRetake }: CardRevealP
               cursor: zoom === 'photo' ? 'default' : 'pointer',
             }}
           >
-            <p style={{ fontFamily: 'Italianno, serif', fontSize: 32, color: '#3B9BB8', marginBottom: 10, textAlign: 'center' }}>
-              With love
-            </p>
-            {letter.to && (
-              <p style={{ fontFamily: 'Ownglyph_ParkDaHyun, sans-serif', fontSize: 16, color: '#555', marginBottom: 6 }}>
-                {letter.to}에게
+            {/* Background image via <img> so html2canvas renders it correctly */}
+            <img
+              src="/paper-card.jpg"
+              alt=""
+              aria-hidden="true"
+              className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+            />
+            {/* Content */}
+            <div className="relative" style={{ zIndex: 1, padding: '22px 24px 26px' }}>
+              <p style={{ fontFamily: 'Italianno, serif', fontSize: 34, color: '#3B9BB8', marginBottom: 10, textAlign: 'center' }}>
+                With love
               </p>
-            )}
-            {letter.message && (
-              <p style={{ fontFamily: 'Ownglyph_ParkDaHyun, sans-serif', fontSize: 16, color: '#333', lineHeight: 1.7, whiteSpace: 'pre-wrap', marginBottom: 8 }}>
-                {letter.message}
-              </p>
-            )}
-            {letter.from && (
-              <p style={{ fontFamily: 'Ownglyph_ParkDaHyun, sans-serif', fontSize: 14, color: '#777', textAlign: 'right' }}>
-                from. {letter.from}
-              </p>
-            )}
+              {letter.to && (
+                <p style={{ fontFamily: 'Ownglyph_ParkDaHyun, sans-serif', fontSize: 16, color: '#555', marginBottom: 6 }}>
+                  {letter.to}에게
+                </p>
+              )}
+              {letter.message && (
+                <p style={{ fontFamily: 'Ownglyph_ParkDaHyun, sans-serif', fontSize: 16, color: '#333', lineHeight: 1.7, whiteSpace: 'pre-wrap', marginBottom: 8 }}>
+                  {letter.message}
+                </p>
+              )}
+              {letter.from && (
+                <p style={{ fontFamily: 'Ownglyph_ParkDaHyun, sans-serif', fontSize: 14, color: '#777', textAlign: 'right' }}>
+                  from. {letter.from}
+                </p>
+              )}
+            </div>
           </div>
 
           {/* ── Photo strip card ── */}
@@ -199,17 +241,13 @@ export function CardReveal({ letter, shots, webcamRatio, onRetake }: CardRevealP
             onClick={handlePhotoClick}
             className="absolute rounded-xl shadow-xl overflow-hidden select-none"
             style={{
-              width: 240,
-              top: 100,
-              left: 60,
-              backgroundImage: "url('/photocard-color.jpg')",
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-              padding: '12px 14px 16px',
+              width: 230,
+              top: 80,
+              left: 220,
               transform: zoom === 'photo'
-                ? 'rotate(0deg) scale(1.12) translateY(10px)'
+                ? 'rotate(0deg) scale(1.1) translate(-30px, 20px)'
                 : zoom === 'letter'
-                ? 'rotate(9deg) scale(0.88) translateX(15px)'
+                ? 'rotate(10deg) scale(0.88) translateX(10px)'
                 : 'rotate(6deg)',
               transition: 'transform 0.4s cubic-bezier(0.34,1.4,0.64,1), box-shadow 0.4s ease',
               zIndex: zoom === 'photo' ? 10 : zoom === 'letter' ? 1 : 4,
@@ -219,24 +257,34 @@ export function CardReveal({ letter, shots, webcamRatio, onRetake }: CardRevealP
               cursor: zoom === 'letter' ? 'default' : 'pointer',
             }}
           >
-            <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-              <SortableContext items={visibleOrder.map(i => i.toString())} strategy={verticalListSortingStrategy}>
-                <div className="flex flex-col gap-2">
-                  {visibleOrder.map((originalIdx) => (
-                    <SortablePhotoSlot
-                      key={originalIdx}
-                      shot={shots[originalIdx]}
-                      index={originalIdx}
-                      aspectRatio={photoAspect}
-                      filter={filter}
-                    />
-                  ))}
-                </div>
-              </SortableContext>
-            </DndContext>
-            <p style={{ fontFamily: 'Italianno, serif', fontSize: 18, color: '#3B9BB8', textAlign: 'center', marginTop: 8 }}>
-              With love
-            </p>
+            {/* Background image via <img> */}
+            <img
+              src="/photocard-color.jpg"
+              alt=""
+              aria-hidden="true"
+              className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+            />
+            {/* Content */}
+            <div className="relative" style={{ zIndex: 1, padding: '14px 16px 18px' }}>
+              <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+                <SortableContext items={visibleOrder.map(i => i.toString())} strategy={verticalListSortingStrategy}>
+                  <div className="flex flex-col gap-2">
+                    {visibleOrder.map((originalIdx) => (
+                      <SortablePhotoSlot
+                        key={originalIdx}
+                        shot={shots[originalIdx]}
+                        index={originalIdx}
+                        aspectRatio={photoAspect}
+                        filter={filter}
+                      />
+                    ))}
+                  </div>
+                </SortableContext>
+              </DndContext>
+              <p style={{ fontFamily: 'Italianno, serif', fontSize: 20, color: '#3B9BB8', textAlign: 'center', marginTop: 10 }}>
+                With love
+              </p>
+            </div>
           </div>
         </div>
       </div>
