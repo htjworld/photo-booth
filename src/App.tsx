@@ -17,7 +17,7 @@ function App() {
   const [step, setStep] = useState<Step>('letter');
   const [letter, setLetter] = useState<LetterData>({ to: '', message: '', from: '' });
   const [timer, setTimer] = useState<TimerOption>(3);
-  const [shotCount, setShotCount] = useState(1);
+  const [shotCount, setShotCount] = useState(4);
   const [webcamRatio, setWebcamRatio] = useState<number | null>(null);
 
   // Glow
