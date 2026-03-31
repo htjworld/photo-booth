@@ -21,7 +21,7 @@ export function LetterScreen({ onStart }: LetterScreenProps) {
     <div
       className="relative min-h-screen flex flex-col items-center justify-center px-4 py-8"
       style={{
-        backgroundImage: "url('/background.jpg')",
+        backgroundImage: `url('${import.meta.env.BASE_URL}background.png')`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
       }}
@@ -35,7 +35,7 @@ export function LetterScreen({ onStart }: LetterScreenProps) {
       <div
         className="relative z-10 w-[340px] rounded-2xl shadow-2xl px-8 pt-8 pb-10"
         style={{
-          backgroundImage: "url('/paper-card.jpg')",
+          backgroundImage: `url('${import.meta.env.BASE_URL}paper-card.jpg')`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
         }}

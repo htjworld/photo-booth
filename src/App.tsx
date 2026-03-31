@@ -55,6 +55,7 @@ function App() {
 
   const handleStart = (data: LetterData) => {
     setLetter(data);
+    startCamera();
     setStep('shooting');
   };
 
@@ -63,10 +64,10 @@ function App() {
     setStep('result');
   };
 
-  const handleRetakeAll = () => {
+  const handleStartOver = () => {
     resetCapture();
-    startCamera();
-    setStep('shooting');
+    setLetter({ to: '', message: '', from: '' });
+    setStep('letter');
   };
 
   // ── Letter step ────────────────────────────────────────────────
@@ -81,7 +82,7 @@ function App() {
         letter={letter}
         shots={capturedShots}
         webcamRatio={webcamRatio}
-        onRetake={handleRetakeAll}
+        onRetake={handleStartOver}
       />
     );
   }

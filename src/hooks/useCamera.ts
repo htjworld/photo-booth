@@ -36,14 +36,13 @@ export function useCamera() {
   }, []);
 
   useEffect(() => {
-    startCamera();
     return () => {
       if (streamRef.current) {
         streamRef.current.getTracks().forEach(track => track.stop());
         streamRef.current = null;
       }
     };
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, []);
 
   return { videoRef, stream, error, startCamera, stopCamera };
 }
