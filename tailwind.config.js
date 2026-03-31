@@ -5,7 +5,13 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        italianno: ['Italianno', 'serif'],
+        cormorant: ['"Cormorant Garamond"', 'serif'],
+        pdh: ['Ownglyph_ParkDaHyun', 'sans-serif'],
+      },
+    },
   },
   plugins: [],
 }
